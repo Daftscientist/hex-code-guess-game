@@ -1,6 +1,5 @@
-// FILE: ColorBoxes.js
 import React, { useState, useEffect } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Modal from 'react-modal';
 import Confetti from 'react-confetti';
 
@@ -76,7 +75,6 @@ const ColorBoxes = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <Toaster />
       <h1 className="text-2xl font-bold mb-6">Color Guesser</h1>
       <input
         type="text"
