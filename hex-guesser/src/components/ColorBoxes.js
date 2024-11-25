@@ -58,7 +58,9 @@ const ColorBoxes = () => {
   const handleHintClick = () => {
     if (!hintUsed) {
       const hint = calculateHint(userColor, randomColor);
-      toast(hint);
+      toast(hint, {
+        icon: '💡',
+      });
       setHintUsed(true);
     } else {
       toast.error('Hint already used!');
