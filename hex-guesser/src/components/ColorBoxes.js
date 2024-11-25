@@ -136,18 +136,21 @@ const ColorBoxes = () => {
         <button
           onClick={handleResetClick}
           className="p-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+          disabled={loading}
         >
-          <FaRedo />
+          {loading ? <div className="loader"></div> : <FaRedo />}
         </button>
         <button
           onClick={handleSubmitGuess}
           className="p-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          disabled={loading}
         >
           Submit Guess
         </button>
         <button
           onClick={handleHintClick}
           className="p-3 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          disabled={loading}
         >
           <FaLightbulb />
         </button>
