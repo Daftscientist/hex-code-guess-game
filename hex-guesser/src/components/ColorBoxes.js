@@ -12,11 +12,14 @@ const ColorBoxes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [accuracy, setAccuracy] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [successReset, setSuccessReset] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setRandomColor(generateRandomColor());
+    let generatedRandomColour = generateRandomColor();
+    //console.log(generatedRandomColour);
+    setRandomColor(generatedRandomColour);
   }, []);
 
   const generateRandomColor = () => {
@@ -29,13 +32,21 @@ const ColorBoxes = () => {
 
   const handleResetClick = () => {
     setLoading(true);
-    setTimeout(() => {
-      setRandomColor(generateRandomColor());
-      setAttempts(0);
-      setHintUsed(false);
-      setLoading(false);
-      toast.success('Game reset!');
-    }, 1000);
+    if (!successReset) {
+        setTimeout(() => {
+        setRandomColor(generateRandomColor());
+        setAttempts(0);
+        setHintUsed(false);
+        setLoading(false);
+        toast.success('Game reset!');
+        }, 1000);
+    } else {
+        setRandomColor(generateRandomColor());
+        setAttempts(0);
+        setHintUsed(false);
+        setLoading(false);
+        toast.success('Game reset!');
+    }
   };
 
   const handleSubmitGuess = () => {
@@ -46,12 +57,16 @@ const ColorBoxes = () => {
     if (accuracy === 100) {
       toast.success('Perfect match!');
       setShowConfetti(true);
+      setSuccessReset(true);
       setIsModalOpen(true);
     } else if (accuracy >= 80) {
       toast.success('Very close!');
       setIsModalOpen(true);
+    } else if (accuracy >= 51) {
+        toast.success('More than half way there!');
+        setIsModalOpen(true);
     } else {
-      toast.error("Your far off, try again!");
+      toast.error("Your too far off, try again!");
     }
   };
 
@@ -178,10 +193,14 @@ const ColorBoxes = () => {
           onClick={() => {
             setIsModalOpen(false);
             setShowConfetti(false);
+            if (successReset) {
+              setSuccessReset(false);
+              handleResetClick();
+            }
           }}
           className="mt-4 p-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Close
+          {successReset ? 'Close & Reset' : 'Close'}
         </button>
       </Modal>
     </div>
