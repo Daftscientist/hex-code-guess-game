@@ -1,10 +1,12 @@
-
+// FILE: App.js
+import React from 'react';
+import ColorBoxes from './components/ColorBoxes';
 
 function App() {
   return (
-    <>
-      hello
-    </>
+    <div className="App">
+      <ColorBoxes />
+    </div>
   );
 }
 
