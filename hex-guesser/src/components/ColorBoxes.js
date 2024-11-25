@@ -1,7 +1,9 @@
+// FILE: ColorBoxes.js
 import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import Modal from 'react-modal';
 import Confetti from 'react-confetti';
+import { FaLightbulb, FaRedo } from 'react-icons/fa';
 
 const ColorBoxes = () => {
   const [userColor, setUserColor] = useState('#ffffff');
@@ -10,11 +12,11 @@ const ColorBoxes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [accuracy, setAccuracy] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [hintUsed, setHintUsed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    let randomColor = generateRandomColor();
-    console.log(randomColor);
-    setRandomColor(randomColor);
+    setRandomColor(generateRandomColor());
   }, []);
 
   const generateRandomColor = () => {
@@ -26,9 +28,14 @@ const ColorBoxes = () => {
   };
 
   const handleResetClick = () => {
-    setRandomColor(generateRandomColor());
-    setAttempts(0);
-    toast.success('Game reset!');
+    setLoading(true);
+    setTimeout(() => {
+      setRandomColor(generateRandomColor());
+      setAttempts(0);
+      setHintUsed(false);
+      setLoading(false);
+      toast.success('Game reset!');
+    }, 1000);
   };
 
   const handleSubmitGuess = () => {
@@ -48,19 +55,46 @@ const ColorBoxes = () => {
     }
   };
 
-  const calculateAccuracy = (color1, color2) => {
-    // Convert hex to RGB
+  const handleHintClick = () => {
+    if (!hintUsed) {
+      const hint = calculateHint(userColor, randomColor);
+      toast(hint);
+      setHintUsed(true);
+    } else {
+      toast.error('Hint already used!');
+    }
+  };
+
+  const calculateHint = (color1, color2) => {
     const rgb1 = hexToRgb(color1);
     const rgb2 = hexToRgb(color2);
 
-    // Calculate the difference
+    const redDiff = rgb2.r - rgb1.r;
+    const greenDiff = rgb2.g - rgb1.g;
+    const blueDiff = rgb2.b - rgb1.b;
+
+    let hint = 'You need ';
+    if (Math.abs(redDiff) > Math.abs(greenDiff) && Math.abs(redDiff) > Math.abs(blueDiff)) {
+      hint += redDiff > 0 ? 'more red' : 'less red';
+    } else if (Math.abs(greenDiff) > Math.abs(redDiff) && Math.abs(greenDiff) > Math.abs(blueDiff)) {
+      hint += greenDiff > 0 ? 'more green' : 'less green';
+    } else {
+      hint += blueDiff > 0 ? 'more blue' : 'less blue';
+    }
+
+    return hint;
+  };
+
+  const calculateAccuracy = (color1, color2) => {
+    const rgb1 = hexToRgb(color1);
+    const rgb2 = hexToRgb(color2);
+
     const diff = Math.sqrt(
       Math.pow(rgb1.r - rgb2.r, 2) +
       Math.pow(rgb1.g - rgb2.g, 2) +
       Math.pow(rgb1.b - rgb2.b, 2)
     );
 
-    // Calculate accuracy
     const maxDiff = Math.sqrt(Math.pow(255, 2) * 3);
     return Math.round((1 - diff / maxDiff) * 100);
   };
@@ -69,12 +103,13 @@ const ColorBoxes = () => {
     const bigint = parseInt(hex.slice(1), 16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
+    const b = (bigint & 255);
     return { r, g, b };
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <Toaster />
       <h1 className="text-2xl font-bold mb-6">Color Guesser</h1>
       <input
         type="text"
@@ -89,22 +124,32 @@ const ColorBoxes = () => {
           style={{ backgroundColor: userColor }}
         ></div>
         <div
-          className="w-32 h-32 rounded-lg shadow-md"
+          className="w-32 h-32 rounded-lg shadow-md flex items-center justify-center"
           style={{ backgroundColor: randomColor }}
-        ></div>
+        >
+          {loading && <div className="loader"></div>}
+        </div>
       </div>
-      <button
-        onClick={handleSubmitGuess}
-        className="p-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-      >
-        Submit Guess
-      </button>
-      <button
-        onClick={handleResetClick}
-        className="p-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Reset Random Color
-      </button>
+      <div className="flex space-x-2 mb-4">
+        <button
+          onClick={handleResetClick}
+          className="p-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          <FaRedo />
+        </button>
+        <button
+          onClick={handleSubmitGuess}
+          className="p-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          Submit Guess
+        </button>
+        <button
+          onClick={handleHintClick}
+          className="p-3 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        >
+          <FaLightbulb />
+        </button>
+      </div>
       <p className="mt-4">Attempts: {attempts}</p>
       <Modal
         isOpen={isModalOpen}
@@ -123,13 +168,10 @@ const ColorBoxes = () => {
           onClick={() => {
             setIsModalOpen(false);
             setShowConfetti(false);
-            setRandomColor(generateRandomColor());
-            setAttempts(0);
-            toast.success('Game reset!');
           }}
           className="mt-4 p-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Close & Restart
+          Close
         </button>
       </Modal>
     </div>
