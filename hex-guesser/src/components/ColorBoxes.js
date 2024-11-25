@@ -118,18 +118,23 @@ const ColorBoxes = () => {
         value={userColor}
         onChange={handleInputChange}
         placeholder="Enter hex color"
-        className="mb-4 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={`${loading ? 'cursor-not-allowed' : ''} mb-4 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        disabled={loading}
       />
-      <div className="flex space-x-4 mb-6">
+      <div className="flex space-x-4 mb-6 relative">
         <div
           className="w-32 h-32 rounded-lg shadow-md"
           style={{ backgroundColor: userColor }}
         ></div>
         <div
-          className="w-32 h-32 rounded-lg shadow-md flex items-center justify-center"
+          className="w-32 h-32 rounded-lg shadow-md flex items-center justify-center relative"
           style={{ backgroundColor: randomColor }}
         >
-          {loading && <div className="loader"></div>}
+          {loading && (
+            <div className="overlay">
+              <div className="loader"></div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex space-x-2 mb-4">
@@ -142,14 +147,14 @@ const ColorBoxes = () => {
         </button>
         <button
           onClick={handleSubmitGuess}
-          className="p-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className={`${loading ? 'cursor-not-allowed' : ''} p-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500`}
           disabled={loading}
         >
           Submit Guess
         </button>
         <button
           onClick={handleHintClick}
-          className="p-3 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className={`${loading ? 'cursor-not-allowed' : ''} p-3 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500`}
           disabled={loading}
         >
           <FaLightbulb />
