@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/hex-code-guess-game/static/css/main.d240e759.css",
+    "main.js": "/hex-code-guess-game/static/js/main.68992e9b.js",
+    "index.html": "/hex-code-guess-game/index.html",
+    "main.d240e759.css.map": "/hex-code-guess-game/static/css/main.d240e759.css.map",
+    "main.68992e9b.js.map": "/hex-code-guess-game/static/js/main.68992e9b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d240e759.css",
+    "static/js/main.68992e9b.js"
+  ]
+}
